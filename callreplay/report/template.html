@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>callreplay report</title>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --ink: #17181c; --muted: #6b6f78; --faint: #9a9ea6; --line: #e6e6e1; --soft: #f1f1ee;
+  --accent: #3b5bdb; --accent-soft: #edf1ff;
+  --pass: #2f9e44; --pass-soft: #e8f6ea; --warn: #c77700; --warn-soft: #fff3dc; --fail: #d6336c; --fail-soft: #fde8ef;
+  --review: #1c7ed6; --review-soft: #e6f2fd; --grey: #868e96; --grey-soft: #f0f1f2; --err: #7048e8; --err-soft: #f0ebff;
+  --user: #f1f1ee; --agent: #eef2ff; --shadow: 0 1px 2px rgba(20,20,30,.05), 0 8px 24px rgba(20,20,30,.06);
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111214; --panel: #18191c; --ink: #ececef; --muted: #9ea2ab; --faint: #6d717a; --line: #2a2c31; --soft: #1f2024;
+    --accent: #8ea4ff; --accent-soft: #1d2340;
+    --pass: #51cf66; --pass-soft: #16281a; --warn: #fab005; --warn-soft: #2d2410; --fail: #f06595; --fail-soft: #331620;
+    --review: #4dabf7; --review-soft: #13253a; --grey: #868e96; --grey-soft: #222428; --err: #b197fc; --err-soft: #241d3d;
+    --user: #1f2024; --agent: #1a1f36; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 80px; }
+header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.brand { font: 600 12px var(--mono); color: var(--accent); letter-spacing: .02em; display: flex; align-items: center; gap: 7px; }
+.brand i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+h1 { font-size: 26px; letter-spacing: -.02em; margin: 6px 0 4px; font-weight: 650; }
+.meta { color: var(--muted); font-size: 13px; }
+.meta code { font-family: var(--mono); font-size: 12px; color: var(--ink); background: var(--soft); padding: 1px 6px; border-radius: 5px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+.card .k { color: var(--muted); font-size: 12px; font-weight: 550; text-transform: uppercase; letter-spacing: .04em; }
+.card .v { font-size: 28px; font-weight: 680; letter-spacing: -.02em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.card .v small { font-size: 15px; color: var(--muted); font-weight: 550; }
+.card .s { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.card.click { cursor: pointer; transition: border-color .15s; }
+.card.click:hover { border-color: var(--accent); }
+.bar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: var(--soft); margin: 4px 0 10px; }
+.bar span { display: block; height: 100%; cursor: pointer; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
+.legend b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: 1px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.panel h2 { font-size: 13px; font-weight: 650; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.panel h2 span { color: var(--muted); font-weight: 500; font-size: 12px; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; padding: 8px 16px; border-bottom: 1px solid var(--line); background: var(--soft); }
+td { padding: 9px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+code, .mono { font-family: var(--mono); font-size: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.st-pass { background: var(--pass-soft); color: var(--pass); } .st-warn { background: var(--warn-soft); color: var(--warn); }
+.st-fail { background: var(--fail-soft); color: var(--fail); } .st-review { background: var(--review-soft); color: var(--review); }
+.st-unscorable { background: var(--grey-soft); color: var(--grey); } .st-error { background: var(--err-soft); color: var(--err); }
+.ch-fixed, .ch-better { color: var(--pass); } .ch-regressed { color: var(--fail); } .ch-worse { color: var(--warn); }
+.ch-same, .ch-unscorable { color: var(--faint); } .ch-error { color: var(--err); }
+.change { font-weight: 650; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.arrow { color: var(--faint); margin: 0 4px; }
+.sev { font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .04em; }
+.sev-error { color: var(--fail); } .sev-warning { color: var(--warn); } .sev-review { color: var(--review); } .sev-info { color: var(--faint); }
+.delta-up { color: var(--fail); } .delta-down { color: var(--pass); }
+.toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.chip { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 99px; padding: 4px 11px; font: 600 12px inherit; font-family: inherit; cursor: pointer; }
+.chip b { color: var(--muted); font-weight: 600; margin-left: 3px; }
+.chip.on { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.chip.on b { color: var(--panel); opacity: .7; }
+input.search { margin-left: auto; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 6px 10px; font: 13px inherit; font-family: inherit; min-width: 220px; }
+#rows tr { cursor: pointer; }
+#rows tr:hover td { background: var(--soft); }
+.msg { color: var(--muted); max-width: 440px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+/* detail */
+.overlay { position: fixed; inset: 0; background: rgba(10,10,15,.45); display: none; z-index: 10; }
+.overlay.on { display: block; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(1100px, 96vw); background: var(--bg); z-index: 11; transform: translateX(102%); transition: transform .22s ease; display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,.18); }
+.drawer.on { transform: none; }
+.dhead { padding: 16px 22px; border-bottom: 1px solid var(--line); background: var(--panel); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.dhead h3 { margin: 0; font: 650 16px var(--mono); }
+.dhead .x { margin-left: auto; border: 0; background: var(--soft); color: var(--ink); width: 30px; height: 30px; border-radius: 8px; font-size: 16px; cursor: pointer; }
+.dnav { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 4px 9px; cursor: pointer; font: 12px inherit; font-family: inherit; }
+.dbody { overflow: auto; padding: 18px 22px 40px; }
+.findings { display: grid; gap: 6px; margin-bottom: 16px; }
+.finding { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: 8px; padding: 7px 11px; font-size: 13px; }
+.finding.error { border-left-color: var(--fail); } .finding.warning { border-left-color: var(--warn); }
+.finding.review { border-left-color: var(--review); } .finding.info { border-left-color: var(--grey); }
+.finding .where { color: var(--faint); font: 11px var(--mono); margin-left: 6px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.cols.one { grid-template-columns: 1fr; max-width: 640px; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+.col h4 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.turn { margin: 0 0 8px; display: flex; flex-direction: column; }
+.turn .who { font-size: 11px; color: var(--faint); margin: 0 4px 2px; font-weight: 600; }
+.bubble { padding: 8px 12px; border-radius: 12px; max-width: 92%; white-space: pre-wrap; word-wrap: break-word; }
+.turn.user { align-items: flex-start; } .turn.user .bubble { background: var(--user); border-top-left-radius: 4px; }
+.turn.agent { align-items: flex-end; } .turn.agent .bubble { background: var(--agent); border-top-right-radius: 4px; }
+.turn.agent .who { text-align: right; }
+.turn.flag-error .bubble, .turn.flag-error .call { box-shadow: 0 0 0 2px var(--fail); }
+.turn.flag-warning .bubble, .turn.flag-warning .call { box-shadow: 0 0 0 2px var(--warn); }
+.note { font-size: 12px; margin: 4px 4px 0; max-width: 92%; }
+.note.error { color: var(--fail); } .note.warning { color: var(--warn); } .note.review, .note.info { color: var(--muted); }
+.call { font: 12px var(--mono); border: 1px dashed var(--line); border-radius: 8px; padding: 6px 10px; background: var(--panel); max-width: 92%; align-self: flex-end; margin-top: 3px; }
+.call .fn { color: var(--accent); font-weight: 600; }
+.result { font: 11.5px var(--mono); color: var(--muted); max-width: 92%; align-self: flex-end; margin: 3px 0 0; padding: 0 4px; white-space: pre-wrap; word-break: break-word; }
+.src { display: inline-block; font: 600 10px inherit; font-family: inherit; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 4px; background: var(--soft); color: var(--muted); margin-right: 6px; }
+.src.mock, .src.default, .src.other { background: var(--warn-soft); color: var(--warn); }
+.lat { font: 10.5px var(--mono); color: var(--faint); margin: 1px 4px 0; }
+.reason { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; color: var(--muted); }
+footer { color: var(--faint); font-size: 12px; margin-top: 26px; text-align: center; }
+footer a { color: var(--muted); }
+kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--panel); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand"><i></i>callreplay</div>
+      <h1 id="title"></h1>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+  <section class="cards" id="cards"></section>
+  <section class="panel" style="padding:14px 16px" id="dist"></section>
+  <section class="grid2">
+    <div class="panel"><h2>Findings <span id="find-note"></span></h2><table id="findings"></table></div>
+    <div class="panel"><h2>By intent <span id="lat-note"></span></h2><table id="intents"></table></div>
+  </section>
+  <section class="panel">
+    <div class="toolbar" id="filters"></div>
+    <table>
+      <thead id="head"></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>Nothing matches.</div>
+  </section>
+  <footer>Open a conversation with a click · <kbd>←</kbd> <kbd>→</kbd> to move between them · <kbd>Esc</kbd> to close · generated by <a href="https://github.com/73bruno/callreplay">callreplay</a></footer>
+</div>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dhead" id="dhead"></div>
+  <div class="dbody" id="dbody"></div>
+</aside>
+<script>
+const DATA = /*__DATA__*/null;
+const S = DATA.summary, REPLAY = DATA.mode === 'replay';
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct = v => v == null ? '–' : Math.round(v * 100) + '%';
+const COLORS = {pass:'var(--pass)', warn:'var(--warn)', review:'var(--review)', fail:'var(--fail)', unscorable:'var(--grey)', error:'var(--err)',
+  fixed:'var(--pass)', better:'#8ce99a', same:'var(--line)', worse:'var(--warn)', regressed:'var(--fail)'};
+const pill = s => `<span class="pill st-${esc(s)}">${esc(s)}</span>`;
+const sevOrder = ['error','warning','review','info'];
+const firstFinding = r => { const f = [...(r.findings||[])].sort((a,b)=>sevOrder.indexOf(a.severity)-sevOrder.indexOf(b.severity))[0]; return f ? f.message : (r.reason || ''); };
+let filter = 'all', query = '', visible = [], openIndex = -1;
+
+// ---------------------------------------------------------------- header and summary
+$('#title').textContent = REPLAY ? `Replay of ${S.total} recorded conversations` : `${S.total} conversations evaluated`;
+$('#meta').innerHTML = [
+  REPLAY ? `agent <code>${esc(DATA.agent)}</code>` : '',
+  DATA.source ? `from <code>${esc(DATA.source)}</code>` : '',
+  DATA.contract ? `contract <code>${esc(DATA.contract)}</code>` : '',
+  esc(DATA.generated_at.replace('T', ' ').replace('+00:00', ' UTC')),
+  DATA.duration ? esc(DATA.duration) : ''].filter(Boolean).join(' · ');
+
+const card = (k, v, s, f) => `<div class="card${f ? ' click' : ''}" ${f ? `data-f="${f}"` : ''}><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s || ''}</div></div>`;
+if (REPLAY) {
+  const c = S.changes;
+  $('#cards').innerHTML =
+    card('Pass rate', `${pct(S.recorded_pass_rate_same_set)} <small>→</small> ${pct(S.replay_pass_rate)}`, `recorded → replayed, ${S.replayed} comparable`) +
+    card('Regressed', `<span style="color:var(--fail)">${c.regressed || 0}</span>`, `worked before, fail now${c.worse ? ` · ${c.worse} worse` : ''}`, 'regressed') +
+    card('Fixed', `<span style="color:var(--pass)">${c.fixed || 0}</span>`, `failed before, pass now${c.better ? ` · ${c.better} better` : ''}`, 'fixed') +
+    card('Unchanged', c.same || 0, `${S.same_tools} of ${S.replayed} called the same tools`, 'same') +
+    card('Not judged', (c.unscorable || 0) + (c.error || 0), `${c.unscorable || 0} unscorable · ${c.error || 0} error${c.error === 1 ? '' : 's'}`, 'notjudged');
+} else {
+  const r = S.recorded;
+  $('#cards').innerHTML =
+    card('Pass rate', pct(S.recorded_pass_rate), `of ${S.scored} scored conversations`) +
+    card('Failures', `<span style="color:var(--fail)">${r.fail || 0}</span>`, 'error-level findings', 'fail') +
+    card('Warnings', `<span style="color:var(--warn)">${r.warn || 0}</span>`, 'worth a look', 'warn') +
+    card('To review', r.review || 0, 'unclear, a person decides', 'review') +
+    card('Unscorable', r.unscorable || 0, 'nothing to judge', 'unscorable');
+}
+document.querySelectorAll('.card.click').forEach(el => el.onclick = () => setFilter(el.dataset.f));
+
+function distribution() {
+  const rows = REPLAY ? [['Change', S.changes, ['regressed','worse','same','better','fixed','error','unscorable']]] :
+    [['Status', S.recorded, ['fail','warn','review','pass','unscorable']]];
+  if (REPLAY) rows.unshift(['Recorded', S.recorded, ['fail','warn','review','pass','unscorable']], ['Replayed', S.replay, ['fail','warn','review','pass','error','unscorable']]);
+  $('#dist').innerHTML = rows.map(([label, counts, keys]) => {
+    const total = keys.reduce((a, k) => a + (counts[k] || 0), 0) || 1;
+    const segs = keys.filter(k => counts[k]).map(k => `<span title="${k}: ${counts[k]}" data-f="${label === 'Change' ? k : 'st:' + (label === 'Replayed' ? 'r:' : '') + k}" style="width:${counts[k] / total * 100}%;background:${COLORS[k]}"></span>`).join('');
+    const legend = keys.filter(k => counts[k]).map(k => `<span><i class="dot" style="background:${COLORS[k]}"></i>${k} <b>${counts[k]}</b></span>`).join('');
+    return `<div style="display:grid;grid-template-columns:78px 1fr;gap:12px;align-items:center;margin:2px 0 8px"><div class="meta" style="font-weight:600">${label}</div><div><div class="bar">${segs}</div><div class="legend">${legend}</div></div></div>`;
+  }).join('');
+  document.querySelectorAll('#dist .bar span').forEach(el => el.onclick = () => setFilter(el.dataset.f));
+}
+distribution();
+
+$('#findings').innerHTML = S.findings.length ?
+  `<tr><th>Code</th><th>Severity</th><th class="n">${REPLAY ? 'Recorded' : 'Count'}</th>${REPLAY ? '<th class="n">Replayed</th>' : ''}</tr>` +
+  S.findings.map(f => {
+    const d = f.replay - f.recorded;
+    return `<tr><td><code>${esc(f.code)}</code></td><td><span class="sev sev-${f.severity}">${f.severity}</span></td><td class="n">${f.recorded}</td>` +
+      (REPLAY ? `<td class="n">${f.replay}${d ? ` <span class="${d > 0 ? 'delta-up' : 'delta-down'}">${d > 0 ? '+' : ''}${d}</span>` : ''}</td>` : '') + '</tr>';
+  }).join('') : '<tr><td class="empty">No findings.</td></tr>';
+$('#find-note').textContent = 'what the checks found';
+
+$('#intents').innerHTML = `<tr><th>Intent</th><th class="n">Calls</th><th class="n">Pass${REPLAY ? ', recorded → replayed' : ''}</th>${REPLAY ? '<th class="n">Regressed</th>' : ''}</tr>` +
+  Object.entries(S.intents).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="n">${v.n}</td><td class="n">${
+    REPLAY ? `${v.recorded_pass || 0} → ${v.replay_pass || 0} <span class="meta">of ${v.replayed || 0}</span>` : `${v.recorded_pass || 0} <span class="meta">of ${v.n}</span>`}</td>${
+    REPLAY ? `<td class="n" style="color:${v.regressed ? 'var(--fail)' : 'var(--faint)'}">${v.regressed || 0}</td>` : ''}</tr>`).join('');
+const lat = S.latency || {};
+$('#lat-note').textContent = lat.recorded ? `agent latency p50 ${lat.recorded.p50} ms · p95 ${lat.recorded.p95} ms` +
+  (lat.replay ? ` → ${lat.replay.p50} / ${lat.replay.p95} ms` : '') : '';
+
+// ---------------------------------------------------------------- the list
+const FILTERS = REPLAY ?
+  [['all','All'],['regressed','Regressed'],['worse','Worse'],['fixed','Fixed'],['better','Better'],['same','Same'],['error','Errors'],['unscorable','Unscorable']] :
+  [['all','All'],['fail','Failures'],['warn','Warnings'],['review','Review'],['pass','Pass'],['unscorable','Unscorable']];
+const matches = (it, f) => {
+  if (f === 'all') return true;
+  if (f === 'notjudged') return it.change === 'unscorable' || it.change === 'error';
+  if (f.startsWith('st:r:')) return it.replay && it.replay.status === f.slice(5);
+  if (f.startsWith('st:')) return it.reference.status === f.slice(3);
+  return REPLAY ? it.change === f : it.reference.status === f;
+};
+function setFilter(f) { filter = f; render(); $('#filters').scrollIntoView({behavior: 'smooth', block: 'start'}); }
+function render() {
+  $('#filters').innerHTML = FILTERS.map(([k, label]) => {
+    const n = DATA.items.filter(it => matches(it, k)).length;
+    return (k === 'all' || n) ? `<button class="chip${filter === k ? ' on' : ''}" data-f="${k}">${label}<b>${n}</b></button>` : '';
+  }).join('') + `<input class="search" id="q" placeholder="Search id, intent, text…" value="${esc(query)}">`;
+  document.querySelectorAll('#filters .chip').forEach(el => el.onclick = () => { filter = el.dataset.f; render(); });
+  const q = $('#q'); q.oninput = () => { query = q.value; renderRows(); };
+  renderRows();
+}
+function renderRows() {
+  const needle = query.trim().toLowerCase();
+  visible = DATA.items.filter(it => matches(it, filter) && (!needle || JSON.stringify([it.id, it.reference.intent, it.reference_conversation.turns.map(t => t.text)]).toLowerCase().includes(needle)));
+  $('#head').innerHTML = REPLAY ?
+    '<tr><th>Conversation</th><th>Intent</th><th>Recorded → replayed</th><th>Change</th><th>What happened</th></tr>' :
+    '<tr><th>Conversation</th><th>Intent</th><th>Status</th><th class="n">Score</th><th>What happened</th></tr>';
+  $('#rows').innerHTML = visible.map((it, i) => {
+    const ref = it.reference, rep = it.replay;
+    const msg = REPLAY ? (['same','unscorable'].includes(it.change) && ref.status === 'pass' ? '' : it.change === 'fixed' ? 'was: ' + firstFinding(ref) : firstFinding(rep)) : firstFinding(ref);
+    return `<tr data-i="${i}"><td><code>${esc(it.id)}</code></td><td>${esc(ref.intent || '–')}</td>` + (REPLAY ?
+      `<td>${pill(ref.status)}${it.change !== 'unscorable' ? `<span class="arrow">→</span>${pill(rep.status)}` : ''}</td><td><span class="change ch-${it.change}">${it.change}</span></td>` :
+      `<td>${pill(ref.status)}</td><td class="n">${ref.score ?? '–'}</td>`) + `<td class="msg" title="${esc(msg)}">${esc(msg)}</td></tr>`;
+  }).join('');
+  $('#empty').hidden = visible.length > 0;
+  document.querySelectorAll('#rows tr').forEach(el => el.onclick = () => show(+el.dataset.i));
+}
+
+// ---------------------------------------------------------------- one conversation
+function transcript(conv, result, isReplay) {
+  if (!conv) return `<div class="reason">Not replayed: ${esc(result.reason || 'nothing to judge')}.</div>`;
+  const byTurn = {};
+  (result.findings || []).forEach(f => { if (f.turn != null) (byTurn[f.turn] = byTurn[f.turn] || []).push(f); });
+  const results = {};
+  conv.turns.forEach(t => { if (t.role === 'tool') results[t.tool_call_id] = t; });
+  return conv.turns.map((t, i) => {
+    if (t.role === 'tool') return '';
+    const fs = byTurn[i] || [];
+    const worst = fs.map(f => f.severity).sort((a, b) => sevOrder.indexOf(a) - sevOrder.indexOf(b))[0];
+    const notes = fs.map(f => `<div class="note ${f.severity}">${f.severity === 'error' ? '✕' : f.severity === 'warning' ? '!' : '·'} ${esc(f.message)}</div>`).join('');
+    if (t.role === 'user') return `<div class="turn user${worst ? ' flag-' + worst : ''}"><div class="who">Caller</div><div class="bubble">${esc(t.text)}</div>${notes}</div>`;
+    const calls = (t.tool_calls || []).map(c => {
+      const r = results[c.id];
+      const args = Object.entries(c.args || {}).map(([k, v]) => `${esc(k)}=${esc(JSON.stringify(v))}`).join(', ');
+      const src = r && r.source ? `<span class="src ${r.source.includes('mock') ? 'mock' : r.source === 'default' ? 'default' : r.source.includes('other') ? 'other' : ''}">${esc(r.source)}</span>` : '';
+      const res = r ? `<div class="result">${src}→ ${esc(typeof r.result === 'string' ? r.result : JSON.stringify(r.result))}</div>` : '';
+      return `<div class="call"><span class="fn">${esc(c.name)}</span>(${args})</div>${res}`;
+    }).join('');
+    const bubble = t.text ? `<div class="bubble">${esc(t.text)}</div>` : '';
+    const lat = t.latency_ms != null ? `<div class="lat">${Math.round(t.latency_ms)} ms</div>` : '';
+    return `<div class="turn agent${worst ? ' flag-' + worst : ''}"><div class="who">Agent</div>${bubble}${calls}${lat}${notes}</div>`;
+  }).join('');
+}
+function findingList(result, label) {
+  const fs = (result.findings || []).filter(f => f.turn == null);
+  if (!fs.length) return '';
+  return fs.map(f => `<div class="finding ${f.severity}"><span class="sev sev-${f.severity}">${f.severity}</span> ${esc(f.message)}<span class="where">${label} · ${esc(f.code)}</span></div>`).join('');
+}
+function show(i) {
+  if (i < 0 || i >= visible.length) return;
+  openIndex = i;
+  const it = visible[i], ref = it.reference, rep = it.replay;
+  history.replaceState(null, '', '#' + encodeURIComponent(it.id));
+  $('#dhead').innerHTML = `<h3>${esc(it.id)}</h3>${pill(ref.status)}${REPLAY && it.change !== 'unscorable' ? `<span class="arrow">→</span>${pill(rep.status)} <span class="change ch-${it.change}">${it.change}</span>` : ''}
+    <span class="meta">${esc(ref.intent || 'no intent')}${ref.intent_source ? ' · by ' + esc(ref.intent_source) : ''}</span>
+    <span class="x-wrap" style="margin-left:auto;display:flex;gap:6px"><button class="dnav" onclick="show(${i - 1})" ${i ? '' : 'disabled'}>←</button><button class="dnav" onclick="show(${i + 1})" ${i < visible.length - 1 ? '' : 'disabled'}>→</button><button class="x" onclick="closeDrawer()" aria-label="Close">×</button></span>`;
+  const top = (findingList(ref, REPLAY ? 'recorded' : '') + (REPLAY && rep !== undefined && it.change !== 'unscorable' && rep.status !== 'error' ? findingList(rep, 'replayed') : '')) +
+    (rep && rep.status === 'error' ? `<div class="finding error"><span class="sev sev-error">error</span> The replay could not run: ${esc(rep.reason)}<span class="where">the run, not the agent</span></div>` : '') +
+    (ref.status === 'unscorable' ? `<div class="finding info"><span class="sev sev-info">unscorable</span> ${esc(ref.reason)}</div>` : '');
+  const sources = Object.entries(it.mock_sources || {}).map(([k, v]) => `${v} ${k}`).join(' · ');
+  $('#dbody').innerHTML = (top ? `<div class="findings">${top}</div>` : '') + (REPLAY ?
+    `<div class="cols"><div class="col"><h4>Recorded ${pill(ref.status)}</h4>${transcript(it.reference_conversation, ref)}</div>
+     <div class="col"><h4>Replayed ${rep ? pill(rep.status) : ''} ${sources ? `<span class="meta" style="text-transform:none;letter-spacing:0">tool results: ${esc(sources)}</span>` : ''}</h4>${
+       it.change === 'unscorable' ? `<div class="reason">Not replayed: ${esc(ref.reason)}.</div>` : rep.status === 'error' ? `<div class="reason">${esc(rep.reason)}</div>` : transcript(it.replay_conversation, rep, true)}</div></div>` :
+    `<div class="cols one"><div class="col">${transcript(it.reference_conversation, ref)}</div></div>`);
+  $('#drawer').classList.add('on'); $('#overlay').classList.add('on'); $('#drawer').setAttribute('aria-hidden', 'false');
+  $('#dbody').scrollTop = 0;
+}
+function closeDrawer() { $('#drawer').classList.remove('on'); $('#overlay').classList.remove('on'); openIndex = -1; history.replaceState(null, '', location.pathname + location.search); }
+$('#overlay').onclick = closeDrawer;
+document.addEventListener('keydown', e => {
+  if (openIndex < 0) return;
+  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'ArrowRight') show(openIndex + 1);
+  if (e.key === 'ArrowLeft') show(openIndex - 1);
+});
+render();
+if (location.hash) { const id = decodeURIComponent(location.hash.slice(1)); const i = visible.findIndex(it => it.id === id); if (i >= 0) show(i); }
+</script>
+</body>
+</html>

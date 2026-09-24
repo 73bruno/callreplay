@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "callreplay"
+version = "0.1.0"
+description = "Regression tests for voice and chat agents from recorded conversations: replay them against a new prompt or model, score every call against a contract, and see what broke."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Bruno Sancho Deltell" }]
+requires-python = ">=3.11"
+dependencies = []                      # standard library only
+keywords = ["llm", "agents", "evaluation", "evals", "voice-ai", "voice-agents", "regression-testing", "tool-calling",
+            "function-calling", "livekit", "elevenlabs", "openai", "conversational-ai", "testing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+callreplay = "callreplay.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/73bruno/callreplay"
+Issues = "https://github.com/73bruno/callreplay/issues"
+
+[tool.setuptools]
+packages = ["callreplay", "callreplay.report", "callreplay.examples"]
+
+[tool.setuptools.package-dir]
+"callreplay.examples" = "examples"
+
+[tool.setuptools.package-data]
+"callreplay.report" = ["template.html"]
+"callreplay.examples" = ["dental/*.toml", "dental/*.md", "dental/*.json", "dental/conversations/*.json"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/make_demo.py" = ["E501"]
+"scripts/record_demo.py" = ["E501"]

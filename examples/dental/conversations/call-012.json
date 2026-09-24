@@ -1,0 +1,127 @@
+{
+ "id": "call-012",
+ "caller": "+1 555 0112",
+ "started_at": "2026-09-17T14:37:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 69
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, do you have a slot on Saturday for a check-up?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "check_availability",
+     "args": {
+      "date": "2026-09-19",
+      "service": "checkup"
+     }
+    }
+   ],
+   "latency_ms": 388.6
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "check_availability",
+   "result": {
+    "date": "2026-09-19",
+    "service": "checkup",
+    "slots": [
+     "09:30",
+     "11:00",
+     "12:00"
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "On Saturday I have 9:30 am or 11 am. Which suits you better?",
+   "latency_ms": 946.8
+  },
+  {
+   "role": "user",
+   "text": "11 am is fine."
+  },
+  {
+   "role": "agent",
+   "text": "Great. Can I have your name, please?",
+   "latency_ms": 908.5
+  },
+  {
+   "role": "user",
+   "text": "Omar Haddad."
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_2",
+     "name": "create_booking",
+     "args": {
+      "name": "Omar Haddad",
+      "phone": "+1 555 0112",
+      "date": "2026-09-19",
+      "time": "11:00",
+      "service": "checkup"
+     }
+    }
+   ],
+   "latency_ms": 633.5
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_2",
+   "name": "create_booking",
+   "result": {
+    "ok": true,
+    "booking_id": "HD-5085",
+    "date": "2026-09-19",
+    "time": "11:00",
+    "service": "checkup"
+   }
+  },
+  {
+   "role": "agent",
+   "text": "You're booked for a check-up on Saturday at 11 am. Anything else?",
+   "latency_ms": 1033.2
+  },
+  {
+   "role": "user",
+   "text": "Great, thanks, bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_3",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 808.0
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_3",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

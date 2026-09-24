@@ -1,0 +1,106 @@
+{
+ "id": "call-019",
+ "caller": "+1 555 0119",
+ "started_at": "2026-09-15T10:02:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 55
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, could you move my cleaning on Wednesday to Thursday at 11 am?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "find_booking",
+     "args": {
+      "phone": "+1 555 0119"
+     }
+    }
+   ],
+   "latency_ms": 420.6
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "find_booking",
+   "result": {
+    "bookings": [
+     {
+      "booking_id": "HD-4119",
+      "date": "2026-09-16",
+      "time": "12:00",
+      "service": "cleaning"
+     }
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_2",
+     "name": "reschedule_booking",
+     "args": {
+      "booking_id": "HD-4119",
+      "date": "2026-09-17",
+      "time": "11:00"
+     }
+    }
+   ],
+   "latency_ms": 618.5
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_2",
+   "name": "reschedule_booking",
+   "result": {
+    "ok": true,
+    "booking_id": "HD-4119",
+    "date": "2026-09-17",
+    "time": "11:00"
+   }
+  },
+  {
+   "role": "agent",
+   "text": "Done. It's now on Thursday at 11 am. Anything else?",
+   "latency_ms": 722.8
+  },
+  {
+   "role": "user",
+   "text": "No, that's all, thanks."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_3",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 1181.9
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_3",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

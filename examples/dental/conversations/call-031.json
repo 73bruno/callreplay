@@ -1,0 +1,50 @@
+{
+ "id": "call-031",
+ "caller": "+1 555 0131",
+ "started_at": "2026-09-17T11:58:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 59
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hi, where are you and is there parking?"
+  },
+  {
+   "role": "agent",
+   "text": "We're at 12 Harbor Street, with free parking behind the building. Anything else?",
+   "latency_ms": 1229.9
+  },
+  {
+   "role": "user",
+   "text": "Perfect, thanks, bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 1293.1
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

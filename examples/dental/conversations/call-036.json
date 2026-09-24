@@ -1,0 +1,41 @@
+{
+ "id": "call-036",
+ "caller": "+1 555 0136",
+ "started_at": "2026-09-18T13:27:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 45
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Can I speak to someone about my insurance?"
+  },
+  {
+   "role": "agent",
+   "text": "I'll put you through to the team right away.",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "transfer_call",
+     "args": {
+      "reason": "billing question"
+     }
+    }
+   ],
+   "latency_ms": 1368.6
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "transfer_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

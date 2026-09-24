@@ -1,0 +1,72 @@
+# Harbor Dental, a fictional clinic: what a correct call looks like.
+# Every option is explained in docs/contracts.md.
+
+[agent]
+prompt = "prompt.md"          # the system prompt a replay sends
+tools = "tools.json"          # the tools, in OpenAI format
+
+# Intents are tried in this order; on a tie in keywords, the first one wins.
+[intents.transfer]
+description = "Emergencies, billing and insurance go to a person"
+keywords = ["emergency", "toothache", "bill", "insurance", "speak to"]
+requires = ["transfer_call"]
+
+[intents.cancel]
+keywords = ["cancel", "can't make it"]
+requires = ["find_booking", "cancel_booking"]
+order = [["find_booking", "cancel_booking"]]
+
+[intents.reschedule]
+keywords = ["move", "reschedule", "change"]
+requires = ["find_booking", "reschedule_booking"]
+prefers = ["check_availability"]
+order = [["find_booking", "reschedule_booking"]]
+
+[intents.lookup]
+keywords = ["when is my", "what time is my", "do i have", "confirm my"]
+requires = ["find_booking"]
+
+[intents.info]
+keywords = ["how much", "price", "cost", "open", "close", "hours", "parking", "where are you"]
+
+[intents.book]
+keywords = ["book", "appointment", "come in", "available", "check-up", "cleaning", "filling", "whitening"]
+requires = ["check_availability", "create_booking"]
+order = [["check_availability", "create_booking"]]
+
+# Tools that change something are only allowed in intents that expect them.
+[tools.create_booking]
+required_args = ["name", "phone", "date", "time", "service"]
+writes = true
+
+[tools.reschedule_booking]
+required_args = ["booking_id", "date", "time"]
+writes = true
+
+[tools.cancel_booking]
+required_args = ["booking_id"]
+writes = true
+
+[tools.check_availability]
+required_args = ["date", "service"]
+
+[end_call]
+tool = "end_call"
+goodbye = ["bye", "goodbye", "thanks", "thank you", "that's all", "that's it", "cheers"]
+also_ends = ["transfer_call"]       # after a transfer, the agent's part of the call is over
+
+# Times and prices the agent says must come from a tool, the caller or this list.
+[grounding]
+kinds = ["time", "money"]
+allow = ["9 am", "6 pm", "1 pm"]      # opening hours, also in the prompt
+
+[unscorable]
+min_user_words = 2
+
+# Results for tool calls the recording doesn't have (the new agent took another path).
+[mocks.check_availability]
+slots = ["09:30", "11:00", "15:30"]
+
+[mocks.get_price]
+service = "whitening"
+price = 250

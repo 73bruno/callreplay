@@ -1,0 +1,62 @@
+{
+ "id": "call-024",
+ "caller": "+1 555 0124",
+ "started_at": "2026-09-15T13:40:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 43
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, do I have an appointment this week?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "find_booking",
+     "args": {
+      "phone": "+1 555 0124"
+     }
+    }
+   ],
+   "latency_ms": 622.0
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "find_booking",
+   "result": {
+    "bookings": [
+     {
+      "booking_id": "HD-4120",
+      "date": "2026-09-17",
+      "time": "14:30",
+      "service": "checkup"
+     }
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "Your next appointment is a check-up on Thursday at 2:30 pm. Anything else?",
+   "latency_ms": 1140.2
+  },
+  {
+   "role": "user",
+   "text": "Perfect, that's it, cheers."
+  },
+  {
+   "role": "agent",
+   "text": "Anything else I can help you with?",
+   "latency_ms": 1229.5
+  }
+ ]
+}

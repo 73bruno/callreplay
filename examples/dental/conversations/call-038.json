@@ -1,0 +1,15 @@
+{
+ "id": "call-038",
+ "caller": "+1 555 0138",
+ "started_at": "2026-09-14T13:33:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 4
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  }
+ ]
+}

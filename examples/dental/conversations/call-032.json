@@ -1,0 +1,33 @@
+{
+ "id": "call-032",
+ "caller": "+1 555 0132",
+ "started_at": "2026-09-17T16:30:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 58
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, what are your opening hours?"
+  },
+  {
+   "role": "agent",
+   "text": "We're open Monday to Friday, 9 am to 6 pm, and Saturday mornings. Anything else?",
+   "latency_ms": 933.0
+  },
+  {
+   "role": "user",
+   "text": "OK, that's it, cheers."
+  },
+  {
+   "role": "agent",
+   "text": "Is there anything else I can help you with?",
+   "latency_ms": 1428.0
+  }
+ ]
+}

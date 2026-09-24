@@ -1,0 +1,50 @@
+[
+  {"type": "function", "function": {
+    "name": "check_availability",
+    "description": "Free start times for a service on a day.",
+    "parameters": {"type": "object", "properties": {
+      "date": {"type": "string", "description": "YYYY-MM-DD"},
+      "service": {"type": "string", "enum": ["checkup", "cleaning", "whitening", "filling"]}},
+      "required": ["date", "service"]}}},
+  {"type": "function", "function": {
+    "name": "create_booking",
+    "description": "Book an appointment once the caller has chosen a time.",
+    "parameters": {"type": "object", "properties": {
+      "name": {"type": "string"}, "phone": {"type": "string"},
+      "date": {"type": "string", "description": "YYYY-MM-DD"},
+      "time": {"type": "string", "description": "HH:MM"},
+      "service": {"type": "string", "enum": ["checkup", "cleaning", "whitening", "filling"]}},
+      "required": ["name", "phone", "date", "time", "service"]}}},
+  {"type": "function", "function": {
+    "name": "find_booking",
+    "description": "Find the caller's upcoming appointments by phone number or name.",
+    "parameters": {"type": "object", "properties": {
+      "phone": {"type": "string"}, "name": {"type": "string"}}}}},
+  {"type": "function", "function": {
+    "name": "reschedule_booking",
+    "description": "Move an appointment found with find_booking to a new day and time.",
+    "parameters": {"type": "object", "properties": {
+      "booking_id": {"type": "string"},
+      "date": {"type": "string", "description": "YYYY-MM-DD"},
+      "time": {"type": "string", "description": "HH:MM"}},
+      "required": ["booking_id", "date", "time"]}}},
+  {"type": "function", "function": {
+    "name": "cancel_booking",
+    "description": "Cancel an appointment found with find_booking.",
+    "parameters": {"type": "object", "properties": {"booking_id": {"type": "string"}},
+      "required": ["booking_id"]}}},
+  {"type": "function", "function": {
+    "name": "get_price",
+    "description": "The price of a service, in US dollars.",
+    "parameters": {"type": "object", "properties": {
+      "service": {"type": "string", "enum": ["checkup", "cleaning", "whitening", "filling"]}},
+      "required": ["service"]}}},
+  {"type": "function", "function": {
+    "name": "transfer_call",
+    "description": "Put the caller through to a person.",
+    "parameters": {"type": "object", "properties": {"reason": {"type": "string"}}, "required": ["reason"]}}},
+  {"type": "function", "function": {
+    "name": "end_call",
+    "description": "Hang up, after saying goodbye.",
+    "parameters": {"type": "object", "properties": {"reason": {"type": "string"}}}}}
+]

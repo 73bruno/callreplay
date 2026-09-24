@@ -1,0 +1,50 @@
+{
+ "id": "call-037",
+ "caller": "+1 555 0137",
+ "started_at": "2026-09-17T13:15:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 42
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hi, is this the pharmacy?"
+  },
+  {
+   "role": "agent",
+   "text": "This is Harbor Dental, the dental clinic. Is there anything I can help you with?",
+   "latency_ms": 1441.6
+  },
+  {
+   "role": "user",
+   "text": "Oh, sorry, wrong number. Bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 835.3
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

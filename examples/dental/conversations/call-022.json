@@ -1,0 +1,153 @@
+{
+ "id": "call-022",
+ "caller": "+1 555 0122",
+ "started_at": "2026-09-18T09:20:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 75
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, can I move my whitening appointment please?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "find_booking",
+     "args": {
+      "phone": "+1 555 0122"
+     }
+    }
+   ],
+   "latency_ms": 453.3
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "find_booking",
+   "result": {
+    "bookings": [
+     {
+      "booking_id": "HD-4144",
+      "date": "2026-09-21",
+      "time": "10:00",
+      "service": "whitening"
+     }
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "I can see your whitening on Monday at 10 am. What day would you like instead?",
+   "latency_ms": 1298.9
+  },
+  {
+   "role": "user",
+   "text": "Next Tuesday afternoon."
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_2",
+     "name": "check_availability",
+     "args": {
+      "date": "2026-09-22",
+      "service": "whitening"
+     }
+    }
+   ],
+   "latency_ms": 416.5
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_2",
+   "name": "check_availability",
+   "result": {
+    "date": "2026-09-22",
+    "service": "whitening",
+    "slots": [
+     "11:00",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "On Tuesday I have 3 pm or 4 pm. Which one would you like?",
+   "latency_ms": 827.5
+  },
+  {
+   "role": "user",
+   "text": "3 pm works."
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_3",
+     "name": "reschedule_booking",
+     "args": {
+      "booking_id": "HD-4144",
+      "date": "2026-09-22",
+      "time": "15:00"
+     }
+    }
+   ],
+   "latency_ms": 395.1
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_3",
+   "name": "reschedule_booking",
+   "result": {
+    "ok": true,
+    "booking_id": "HD-4144",
+    "date": "2026-09-22",
+    "time": "15:00"
+   }
+  },
+  {
+   "role": "agent",
+   "text": "Done. It's now on Tuesday at 3 pm. Anything else?",
+   "latency_ms": 917.2
+  },
+  {
+   "role": "user",
+   "text": "That's all, thank you. Bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_4",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 954.1
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_4",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

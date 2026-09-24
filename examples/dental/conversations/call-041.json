@@ -1,0 +1,24 @@
+{
+ "id": "call-041",
+ "caller": "+1 555 0141",
+ "started_at": "2026-09-17T17:52:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 7
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello?"
+  },
+  {
+   "role": "agent",
+   "text": "Sorry, could you say that again?",
+   "latency_ms": 932.2
+  }
+ ]
+}

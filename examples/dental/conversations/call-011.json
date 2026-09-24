@@ -1,0 +1,128 @@
+{
+ "id": "call-011",
+ "caller": "+1 555 0111",
+ "started_at": "2026-09-17T10:09:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 66
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hi, can I book whitening next Monday in the morning?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "check_availability",
+     "args": {
+      "date": "2026-09-21",
+      "service": "whitening"
+     }
+    }
+   ],
+   "latency_ms": 634.9
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "check_availability",
+   "result": {
+    "date": "2026-09-21",
+    "service": "whitening",
+    "slots": [
+     "10:30",
+     "11:30",
+     "15:00",
+     "16:00"
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "On Monday I have 10:30 am or 11:30 am. Which suits you better?",
+   "latency_ms": 1301.0
+  },
+  {
+   "role": "user",
+   "text": "10:30 sounds good."
+  },
+  {
+   "role": "agent",
+   "text": "Great. Can I have your name, please?",
+   "latency_ms": 1232.8
+  },
+  {
+   "role": "user",
+   "text": "It's Grace Chen."
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_2",
+     "name": "create_booking",
+     "args": {
+      "name": "Grace Chen",
+      "phone": "+1 555 0111",
+      "date": "2026-09-21",
+      "time": "10:30",
+      "service": "whitening"
+     }
+    }
+   ],
+   "latency_ms": 399.1
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_2",
+   "name": "create_booking",
+   "result": {
+    "ok": true,
+    "booking_id": "HD-5078",
+    "date": "2026-09-21",
+    "time": "10:30",
+    "service": "whitening"
+   }
+  },
+  {
+   "role": "agent",
+   "text": "You're booked for a whitening on Monday at 10:30 am. Anything else?",
+   "latency_ms": 842.9
+  },
+  {
+   "role": "user",
+   "text": "That's all, thanks. Bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_3",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 889.5
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_3",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

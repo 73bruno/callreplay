@@ -1,0 +1,79 @@
+{
+ "id": "call-026",
+ "caller": "+1 555 0126",
+ "started_at": "2026-09-18T11:34:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 56
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "Hello, could you confirm my appointment?"
+  },
+  {
+   "role": "agent",
+   "text": "",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "find_booking",
+     "args": {
+      "phone": "+1 555 0126"
+     }
+    }
+   ],
+   "latency_ms": 651.8
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "find_booking",
+   "result": {
+    "bookings": [
+     {
+      "booking_id": "HD-4146",
+      "date": "2026-09-21",
+      "time": "16:00",
+      "service": "cleaning"
+     }
+    ]
+   }
+  },
+  {
+   "role": "agent",
+   "text": "Your next appointment is a cleaning on Monday at 4 pm. Anything else?",
+   "latency_ms": 796.6
+  },
+  {
+   "role": "user",
+   "text": "Lovely, thanks. Bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_2",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 812.1
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_2",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

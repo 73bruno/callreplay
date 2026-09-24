@@ -1,0 +1,50 @@
+{
+ "id": "call-030",
+ "caller": "+1 555 0130",
+ "started_at": "2026-09-16T15:12:00-04:00",
+ "metadata": {
+  "channel": "phone",
+  "duration_s": 42
+ },
+ "turns": [
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental, this is Ava. How can I help?"
+  },
+  {
+   "role": "user",
+   "text": "What time do you close on Saturday?"
+  },
+  {
+   "role": "agent",
+   "text": "On Saturdays we're open from 9 am to 1 pm. Anything else?",
+   "latency_ms": 644.7
+  },
+  {
+   "role": "user",
+   "text": "Great, thank you. Bye."
+  },
+  {
+   "role": "agent",
+   "text": "Thanks for calling Harbor Dental. Have a good day!",
+   "tool_calls": [
+    {
+     "id": "call_1",
+     "name": "end_call",
+     "args": {
+      "reason": "caller said goodbye"
+     }
+    }
+   ],
+   "latency_ms": 1027.8
+  },
+  {
+   "role": "tool",
+   "tool_call_id": "call_1",
+   "name": "end_call",
+   "result": {
+    "ok": true
+   }
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest -q
+      - name: The demo runs and gates on regressions
+        run: |
+          callreplay demo --no-open --out /tmp/demo
+          if callreplay replay examples/dental --agent demo --quiet --fail-on regressions --out /tmp/gate; then
+            echo 'expected the demo regressions to fail the gate'; exit 1
+          fi
+          callreplay replay examples/dental --agent demo:v1 --quiet --fail-on regressions --out /tmp/gate
