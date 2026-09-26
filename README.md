@@ -103,17 +103,17 @@ callreplay init calls/
 ```text
   callreplay init · 42 recorded calls in calls, 37 with enough speech to use
 
-  tools       8 used, with how many calls: check_availability (17), find_booking (15), create_booking (12), +5 more
+  tools       8 used: check_availability 17 calls, find_booking 15, create_booking 12, +5 more
   hangs up    end_call · transfers: transfer_call
   writes      create_booking, cancel_booking, reschedule_booking
   intents     7, one per kind of call, in the order they are tried:
                 get_price             2 calls   requires get_price
                 transfer_call         3 calls   requires transfer_call
                 …
-                create_booking       12 calls   requires check_availability, create_booking   keywords: book
+                create_booking       12 calls   requires check_availability, create_booking
 
   wrote       calls/contract.toml
-              calls/tools.json   guessed from the calls: swap in your real tool definitions if you have them
+              calls/tools.json   guessed from the calls: swap in your own if you have them
 
   checked     the same calls against this draft: 4 fail · 2 warn · 31 pass · 5 unscorable
 ```
@@ -128,9 +128,14 @@ contract. [Every option →](docs/contracts.md)
 from `--agent`:
 
 ```bash
-callreplay replay calls/ --agent openai:gpt-4.1-mini            # or anthropic:…, gemini:…, groq:…, ollama:…
-callreplay replay calls/ --agent python:my_agent:reply          # your own code, whatever it runs on
-callreplay replay calls/ --agent openai:gpt-4.1-mini --only fail   # did the fix fix them?
+# any model: openai:, anthropic:, gemini:, groq:, ollama:, or compat: for other servers
+callreplay replay calls/ --agent openai:gpt-4.1-mini
+
+# your own agent code, whatever it runs on
+callreplay replay calls/ --agent python:my_agent:reply
+
+# only the calls that failed in the recording: did the fix fix them?
+callreplay replay calls/ --agent openai:gpt-4.1-mini --only fail
 ```
 
 **5. Gate it in CI.** `--fail-on regressions` exits 1 when a call that passed now fails. In GitHub

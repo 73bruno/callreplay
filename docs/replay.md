@@ -97,7 +97,7 @@ callreplay replay calls/ --agent python:my_agent:reply
 - run: callreplay replay calls/ --agent openai:gpt-4.1-mini --fail-on regressions
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@v7
   if: always()
   with: { name: callreplay-report, path: callreplay-report }
 ```

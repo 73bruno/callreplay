@@ -469,6 +469,24 @@ def record(chrome: bool) -> None:
 
 
 # --------------------------------------------------------------------------- stills
+def social_preview(browser) -> None:
+    """The 1280x640 card GitHub shows when the repo is shared (upload it in Settings)."""
+    shot = base64.b64encode((MEDIA / 'how-it-works-dark.png').read_bytes()).decode()
+    page = browser.new_page(viewport={'width': 1280, 'height': 640})
+    page.set_content(f"""<html><body style="margin:0;width:1280px;height:640px;overflow:hidden;background:#0d1117;
+      font-family:-apple-system,Inter,sans-serif;color:#e6edf3;position:relative">
+      <div style="position:absolute;left:60px;top:150px;width:470px">
+        <div style="font:600 18px ui-monospace,Menlo,monospace;color:#8ea4ff">● callreplay</div>
+        <h1 style="font-size:50px;line-height:1.08;letter-spacing:-.03em;margin:22px 0 18px">Regression tests for voice agents</h1>
+        <p style="font-size:22px;line-height:1.45;color:#9198a1;margin:0">Replay your recorded calls against a new prompt or model,
+          check each one against a contract, and see which calls broke and why.</p>
+        <p style="font:15px ui-monospace,Menlo,monospace;color:#6e7681;margin-top:30px">github.com/73bruno/callreplay</p>
+      </div>
+      <img src="data:image/png;base64,{shot}" style="position:absolute;left:572px;top:150px;width:664px;border-radius:14px;
+        border:1px solid #30363d;box-shadow:0 30px 80px rgba(0,0,0,.5)"></body></html>""")
+    page.screenshot(path=str(MEDIA / 'social-preview.png'))
+
+
 def stills(chrome: bool) -> None:
     """The explainer and the report screenshots, light and dark, and the 1280x640 social preview."""
     from playwright.sync_api import sync_playwright
@@ -495,20 +513,7 @@ def stills(chrome: bool) -> None:
             page.wait_for_timeout(500)
             page.locator('#drawer').screenshot(path=str(MEDIA / f'side-by-side-{scheme}.png'))
 
-        shot = base64.b64encode((MEDIA / 'how-it-works-dark.png').read_bytes()).decode()
-        social = browser.new_page(viewport={'width': 1280, 'height': 640})
-        social.set_content(f"""<html><body style="margin:0;width:1280px;height:640px;overflow:hidden;background:#0d1117;
-          font-family:-apple-system,Inter,sans-serif;color:#e6edf3;position:relative">
-          <div style="position:absolute;left:60px;top:64px;width:470px">
-            <div style="font:600 18px ui-monospace,Menlo,monospace;color:#8ea4ff">● callreplay</div>
-            <h1 style="font-size:50px;line-height:1.08;letter-spacing:-.03em;margin:22px 0 18px">Regression tests for voice agents</h1>
-            <p style="font-size:22px;line-height:1.45;color:#9198a1;margin:0">Replay your recorded calls against a new prompt or model,
-              check each one against a contract, and see which calls broke and why.</p>
-            <p style="font:15px ui-monospace,Menlo,monospace;color:#6e7681;margin-top:30px">github.com/73bruno/callreplay</p>
-          </div>
-          <img src="data:image/png;base64,{shot}" style="position:absolute;left:572px;top:150px;width:664px;border-radius:14px;
-            border:1px solid #30363d;box-shadow:0 30px 80px rgba(0,0,0,.5)"></body></html>""")
-        social.screenshot(path=str(MEDIA / 'social-preview.png'))
+        social_preview(browser)
         browser.close()
     print('stills in', MEDIA)
 

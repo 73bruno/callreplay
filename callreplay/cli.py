@@ -181,7 +181,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     if d.tools_json is not None:
         tools = out.parent / d.tools_file
         tools.write_text(json.dumps(d.tools_json, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
-        written.append((tools, 'guessed from the calls: swap in your real tool definitions if you have them'))
+        written.append((tools, 'guessed from the calls: swap in your own if you have them'))
     contract = contracts.load(out)
     statuses = [evaluate(c, contract, context=contract.prompt).status for c in convs]
     print(_init_summary(d, written, statuses, args.path, st))
@@ -194,20 +194,19 @@ def _init_summary(d: drafts.Draft, written: list[tuple[Path, str]], statuses: li
         return f"  {st(f'{key:<11}', 'dim')} {value}"
 
     named = list(d.tools.items())
-    tools = ', '.join(f'{n} ({k})' for n, k in named[:3]) + (f', +{len(named) - 3} more' if len(named) > 3 else '')
+    tools = ', '.join(f'{n} {k}' + (' calls' if j == 0 else '') for j, (n, k) in enumerate(named[:3])) \
+        + (f', +{len(named) - 3} more' if len(named) > 3 else '')
     L = ['', st(f'  callreplay init · {d.total} recorded calls in {shown}, {d.usable} with enough speech to use', 'bold'), '',
-         row('tools', f'{len(d.tools)} used, with how many calls: {tools}' if d.tools else 'none: no call used a tool')]
+         row('tools', f'{len(d.tools)} used: {tools}' if d.tools else 'none: no call used a tool')]
     if d.end_tool or d.transfers:
         L.append(row('hangs up', ' · '.join(filter(None, [d.end_tool, d.transfers and 'transfers: ' + ', '.join(d.transfers)]))))
     if d.writes:
         L.append(row('writes', ', '.join(d.writes)))
     L.append(row('intents', f'{len(d.intents)}, one per kind of call, in the order they are tried:'))
     w = max((len(i.name) for i in d.intents), default=0)
-    needs = {i.name: 'requires ' + ', '.join(i.requires) if i.requires else 'no tools' for i in d.intents}
-    wn = max((len(v) for v in needs.values()), default=0)
     for i in d.intents:
-        words = f"keywords: {', '.join(i.keywords)}" if i.keywords else ''
-        L.append(f"  {'':<11}   {i.name:<{w}}  {len(i.calls):>3} calls   {needs[i.name]:<{wn}}   {st(words, 'dim')}".rstrip())
+        needs = 'requires ' + ', '.join(i.requires) if i.requires else 'no tools'
+        L.append(f"  {'':<11}   {i.name:<{w}}  {len(i.calls):>3} calls   {needs}")
     if d.allowed:
         L.append(row('grounding', 'allowed without a tool: ' + ', '.join(f'"{v}" ({k} calls)' for v, k in d.allowed.items())))
     L.append('')
@@ -216,7 +215,7 @@ def _init_summary(d: drafts.Draft, written: list[tuple[Path, str]], statuses: li
     counts = [f'{statuses.count(s)} {s}' for s in report.STATUSES if statuses.count(s)]
     L += ['', row('checked', 'the same calls against this draft: ' + ' · '.join(
               st(c, report.STATUS_COLOR[c.split()[1]]) for c in counts)),
-          row('next', f'rename the intents and check their keywords, then: callreplay eval {shown}'), '']
+          row('next', f'rename the intents, check their keywords, then: callreplay eval {shown}'), '']
     return '\n'.join(L)
 
 
