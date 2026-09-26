@@ -194,8 +194,8 @@ def _init_summary(d: drafts.Draft, written: list[tuple[Path, str]], statuses: li
         return f"  {st(f'{key:<11}', 'dim')} {value}"
 
     named = list(d.tools.items())
-    tools = ', '.join(f'{n} {k}' + (' calls' if j == 0 else '') for j, (n, k) in enumerate(named[:3])) \
-        + (f', +{len(named) - 3} more' if len(named) > 3 else '')
+    tools = ', '.join(f'{n} ({k}' + (' calls)' if j == 0 else ')') for j, (n, k) in enumerate(named[:2])) \
+        + (f', +{len(named) - 2} more' if len(named) > 2 else '')
     L = ['', st(f'  callreplay init · {d.total} recorded calls in {shown}, {d.usable} with enough speech to use', 'bold'), '',
          row('tools', f'{len(d.tools)} used: {tools}' if d.tools else 'none: no call used a tool')]
     if d.end_tool or d.transfers:

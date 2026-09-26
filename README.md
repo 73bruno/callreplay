@@ -103,7 +103,7 @@ callreplay init calls/
 ```text
   callreplay init · 42 recorded calls in calls, 37 with enough speech to use
 
-  tools       8 used: check_availability 17 calls, find_booking 15, create_booking 12, +5 more
+  tools       8 used: check_availability (17 calls), find_booking (15), +6 more
   hangs up    end_call · transfers: transfer_call
   writes      create_booking, cancel_booking, reschedule_booking
   intents     7, one per kind of call, in the order they are tried:
