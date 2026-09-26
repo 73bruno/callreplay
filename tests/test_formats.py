@@ -67,6 +67,13 @@ def test_native_round_trip_and_folders(tmp_path):
 
 
 def test_unknown_shape_names_the_file(tmp_path):
-    (tmp_path / 'results.json').write_text(json.dumps({'mode': 'replay', 'items': [{'id': 1}]}))
-    with pytest.raises(ValueError, match='results.json'):
+    (tmp_path / 'export.json').write_text(json.dumps({'mode': 'replay', 'items': [{'id': 1}]}))
+    with pytest.raises(ValueError, match='export.json'):
         formats.load(tmp_path)
+
+
+def test_tool_definitions_and_reports_next_to_the_calls_are_skipped(tmp_path):
+    (tmp_path / 'call.json').write_text(json.dumps({'id': 'a', 'turns': [{'role': 'user', 'text': 'hi'}]}))
+    (tmp_path / 'tools.json').write_text(json.dumps([{'type': 'function', 'function': {'name': 'x'}}]))
+    (tmp_path / 'results.json').write_text(json.dumps({'mode': 'eval', 'items': []}))
+    assert [c.id for c in formats.load(tmp_path)] == ['a']

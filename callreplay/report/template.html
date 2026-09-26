@@ -92,6 +92,7 @@ input.search { margin-left: auto; border: 1px solid var(--line); background: var
 .finding.error { border-left-color: var(--fail); } .finding.warning { border-left-color: var(--warn); }
 .finding.review { border-left-color: var(--review); } .finding.info { border-left-color: var(--grey); }
 .finding .where { color: var(--faint); font: 11px var(--mono); margin-left: 6px; }
+.finding.gone { border-left-color: var(--pass); color: var(--muted); } .sev-gone { color: var(--pass); }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .cols.one { grid-template-columns: 1fr; max-width: 640px; }
 @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
@@ -113,6 +114,42 @@ input.search { margin-left: auto; border: 1px solid var(--line); background: var
 .src.mock, .src.default, .src.other { background: var(--warn-soft); color: var(--warn); }
 .lat { font: 10.5px var(--mono); color: var(--faint); margin: 1px 4px 0; }
 .reason { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; color: var(--muted); }
+.lede { color: var(--muted); font-size: 14px; max-width: 780px; margin: 6px 0 0; }
+.lede b { color: var(--ink); font-weight: 600; }
+.cause { padding: 11px 16px 12px; border-bottom: 1px solid var(--line); }
+.cause:last-child { border-bottom: 0; }
+.ctop { display: flex; gap: 9px; align-items: baseline; }
+.cmark { font-weight: 700; width: 14px; text-align: center; flex: none; }
+.k-regressed .cmark, .k-fail .cmark { color: var(--fail); } .k-worse .cmark, .k-warn .cmark { color: var(--warn); }
+.k-fixed .cmark, .k-better .cmark { color: var(--pass); } .k-review .cmark { color: var(--review); } .k-error .cmark { color: var(--err); }
+.clabel { flex: 1; font-weight: 560; }
+.clabel .was { color: var(--muted); font-weight: 500; }
+.cn { font: 600 12px var(--mono); color: var(--muted); background: var(--soft); border-radius: 99px; padding: 1px 8px; flex: none; }
+.cids { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin: 7px 0 0 23px; }
+.idchip { font: 12px var(--mono); border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; padding: 2px 7px; cursor: pointer; }
+.idchip:hover { border-color: var(--accent); color: var(--accent); }
+.cint { font-size: 12px; color: var(--muted); margin-right: 4px; }
+.ceg { margin: 8px 0 0 23px; font-size: 12.5px; color: var(--muted); }
+.ceg q { color: var(--ink); }
+.empty.small { padding: 18px 16px; font-size: 13px; text-align: left; }
+.notjudged { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; padding: 11px 16px; font-size: 13px; color: var(--muted); }
+.notjudged b { color: var(--ink); font-weight: 600; }
+td.what { max-width: 520px; }
+td.what .msg { max-width: 100%; }
+.tools { margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tc { font: 11px var(--mono); color: var(--muted); }
+.tc.only { font-weight: 650; }
+.tc.del { text-decoration: line-through; }
+.tc.bad { color: var(--fail); } .tc.good { color: var(--pass); } .tc.neutral { color: var(--accent); }
+.tsep { color: var(--faint); margin: 0 5px; font-size: 11px; }
+.tdiff { display: grid; gap: 7px 6px; align-items: center; justify-items: start; justify-content: start; margin: 0 0 16px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.tlab { font-size: 11px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding-right: 8px; }
+.tcell { font: 12px var(--mono); padding: 4px 9px; border-radius: 6px; background: var(--soft); white-space: nowrap; }
+.tcell.only.bad { background: var(--fail-soft); color: var(--fail); font-weight: 650; }
+.tcell.only.good { background: var(--pass-soft); color: var(--pass); font-weight: 650; }
+.tcell.only.neutral { background: var(--accent-soft); color: var(--accent); font-weight: 650; }
+.tcell.gap { background: none; border: 1px dashed var(--line); color: var(--faint); font: 11px inherit; font-family: inherit; }
+.tarrow { color: var(--faint); font-size: 12px; }
 footer { color: var(--faint); font-size: 12px; margin-top: 26px; text-align: center; }
 footer a { color: var(--muted); }
 kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--panel); }
@@ -125,10 +162,13 @@ kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width
       <div class="brand"><i></i>callreplay</div>
       <h1 id="title"></h1>
       <div class="meta" id="meta"></div>
+      <p class="lede" id="lede"></p>
     </div>
   </header>
   <section class="cards" id="cards"></section>
   <section class="panel" style="padding:14px 16px" id="dist"></section>
+  <section class="grid2" id="causes"></section>
+  <section class="panel notjudged" id="notjudged" hidden></section>
   <section class="grid2">
     <div class="panel"><h2>Findings <span id="find-note"></span></h2><table id="findings"></table></div>
     <div class="panel"><h2>By intent <span id="lat-note"></span></h2><table id="intents"></table></div>
@@ -169,6 +209,9 @@ $('#meta').innerHTML = [
   DATA.contract ? `contract <code>${esc(DATA.contract)}</code>` : '',
   esc(DATA.generated_at.replace('T', ' ').replace('+00:00', ' UTC')),
   DATA.duration ? esc(DATA.duration) : ''].filter(Boolean).join(' · ');
+$('#lede').innerHTML = REPLAY ?
+  `Each recorded call was played again with <b>${esc(DATA.agent)}</b>: the caller says the same words, the agent answers anew, and its tool calls get the results from the recording. Both versions are checked against the contract and compared.` :
+  'Each recorded call is checked against the contract: the tools it had to call, in which order and with which arguments, what it must not do, and whether every time and price it said came from somewhere.';
 
 const card = (k, v, s, f) => `<div class="card${f ? ' click' : ''}" ${f ? `data-f="${f}"` : ''}><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s || ''}</div></div>`;
 if (REPLAY) {
@@ -203,6 +246,40 @@ function distribution() {
   document.querySelectorAll('#dist .bar span').forEach(el => el.onclick = () => setFilter(el.dataset.f));
 }
 distribution();
+
+// ---------------------------------------------------------------- what broke, what got fixed: grouped by cause
+const MARK = {regressed:'✕', worse:'↓', fixed:'✓', better:'↑', error:'!', fail:'✕', warn:'!', review:'?'};
+const toolsOf = conv => { const out = []; (conv ? conv.turns : []).forEach(t => (t.role === 'agent' ? t.tool_calls || [] : []).forEach(c => {
+  const last = out[out.length - 1]; if (last && last[0] === c.name) last[1]++; else out.push([c.name, 1]); }));
+  return out.map(([n, k]) => k > 1 ? `${n} ×${k}` : n); };
+const kindOf = it => REPLAY ? it.change : it.reference.status;
+const CAUSES = REPLAY ?
+  [['What broke', ['regressed','worse'], 'Nothing that worked in the recording fails in the replay.'],
+   ['What got fixed', ['fixed','better'], 'Nothing that failed in the recording passes in the replay.']] :
+  [['Failures', ['fail'], 'No call failed.'], ['Warnings and calls to review', ['warn','review'], 'No warnings.']];
+$('#causes').innerHTML = CAUSES.map(([title, kinds, none]) => {
+  const gs = S.causes.filter(g => kinds.includes(g.kind)), n = gs.reduce((a, g) => a + g.ids.length, 0);
+  const body = gs.length ? gs.map(g => {
+    const was = ['fixed','better'].includes(g.kind) ? '<span class="was">was: </span>' : '';
+    const eg = g.example && g.example.caller && ['regressed','worse','fail'].includes(g.kind) ?
+      `<div class="ceg">e.g. ${esc(g.example.id)}: <q>${esc(g.example.caller)}</q></div>` : '';
+    return `<div class="cause k-${g.kind}"><div class="ctop"><span class="cmark">${MARK[g.kind]}</span><span class="clabel">${was}${esc(g.label)}</span><span class="cn">${g.ids.length}</span></div>` +
+      `<div class="cids">${g.intents.map(i => `<span class="cint">${esc(i)}</span>`).join('')}${g.ids.map(id => `<button class="idchip" data-id="${esc(id)}" data-k="${g.kind}">${esc(id)}</button>`).join('')}</div>${eg}</div>`;
+  }).join('') : `<div class="empty small">${none}</div>`;
+  return `<div class="panel"><h2>${title} <span>${n ? `${n} call${n === 1 ? '' : 's'} · ${gs.length} cause${gs.length === 1 ? '' : 's'}` : ''}</span></h2>${body}</div>`;
+}).join('');
+document.querySelectorAll('#causes .idchip').forEach(el => el.onclick = () => openById(el.dataset.id, el.dataset.k));
+
+(() => {
+  const silent = {}; DATA.items.filter(it => it.reference.status === 'unscorable').forEach(it => (silent[it.reference.reason] = silent[it.reference.reason] || []).push(it.id));
+  const errors = S.causes.filter(g => g.kind === 'error');
+  const parts = Object.entries(silent).map(([why, ids]) => `<span>${esc(why)} <b>${ids.length}</b></span>`);
+  if (!parts.length && !errors.length) return;
+  $('#notjudged').innerHTML = `<b>Not judged</b>` + (parts.length ? `<span>nothing to judge:</span>${parts.join('')}` : '') +
+    errors.map(g => `<span>the run failed, not the agent: ${esc(g.label)} ${g.ids.map(id => `<button class="idchip" data-id="${esc(id)}" data-k="error">${esc(id)}</button>`).join(' ')}</span>`).join('');
+  $('#notjudged').hidden = false;
+  document.querySelectorAll('#notjudged .idchip').forEach(el => el.onclick = () => openById(el.dataset.id, el.dataset.k));
+})();
 
 $('#findings').innerHTML = S.findings.length ?
   `<tr><th>Code</th><th>Severity</th><th class="n">${REPLAY ? 'Recorded' : 'Count'}</th>${REPLAY ? '<th class="n">Replayed</th>' : ''}</tr>` +
@@ -253,10 +330,32 @@ function renderRows() {
     const msg = REPLAY ? (['same','unscorable'].includes(it.change) && ref.status === 'pass' ? '' : it.change === 'fixed' ? 'was: ' + firstFinding(ref) : firstFinding(rep)) : firstFinding(ref);
     return `<tr data-i="${i}"><td><code>${esc(it.id)}</code></td><td>${esc(ref.intent || '–')}</td>` + (REPLAY ?
       `<td>${pill(ref.status)}${it.change !== 'unscorable' ? `<span class="arrow">→</span>${pill(rep.status)}` : ''}</td><td><span class="change ch-${it.change}">${it.change}</span></td>` :
-      `<td>${pill(ref.status)}</td><td class="n">${ref.score ?? '–'}</td>`) + `<td class="msg" title="${esc(msg)}">${esc(msg)}</td></tr>`;
+      `<td>${pill(ref.status)}</td><td class="n">${ref.score ?? '–'}</td>`) +
+      `<td class="what"><div class="msg" title="${esc(msg)}">${esc(msg)}</div><div class="tools">${toolChips(it)}</div></td></tr>`;
   }).join('');
   $('#empty').hidden = visible.length > 0;
   document.querySelectorAll('#rows tr').forEach(el => el.onclick = () => show(+el.dataset.i));
+}
+
+const tone = it => ['regressed','worse'].includes(it.change) ? 'bad' : ['fixed','better'].includes(it.change) ? 'good' : 'neutral';
+function toolChips(it) {
+  const sep = '<span class="tsep">›</span>';
+  if (REPLAY && it.tool_diff) return it.tool_diff.map(([a, b]) => a && b ? `<span class="tc">${esc(b)}</span>` :
+    a ? `<span class="tc only del ${tone(it)}" title="in the recording, not in the replay">${esc(a)}</span>` :
+        `<span class="tc only ${tone(it)}" title="in the replay, not in the recording">${esc(b)}</span>`).join(sep);
+  return toolsOf(it.reference_conversation).map(t => `<span class="tc">${esc(t)}</span>`).join(sep);
+}
+function toolDiff(it) {
+  const d = REPLAY ? it.tool_diff : toolsOf(it.reference_conversation).map(t => [t, t]);
+  if (!d || !d.length) return '';
+  const cell = (v, other) => v ? `<span class="tcell${REPLAY && !other ? ' only ' + tone(it) : ''}">${esc(v)}</span>` : '<span class="tcell gap">not called</span>';
+  const row = side => d.map((p, k) => cell(p[side], p[1 - side]) + (k < d.length - 1 ? '<span class="tarrow">→</span>' : '')).join('');
+  return `<div class="tdiff" style="grid-template-columns:auto repeat(${d.length * 2 - 1},auto)">` +
+    (REPLAY ? `<div class="tlab">Recorded</div>${row(0)}<div class="tlab">Replayed</div>${row(1)}` : `<div class="tlab">Tools</div>${row(0)}`) + '</div>';
+}
+function openById(id, kind) {
+  query = ''; filter = kind && FILTERS.some(([k]) => k === kind) ? kind : 'all'; render();
+  const i = visible.findIndex(it => it.id === id); if (i >= 0) show(i);
 }
 
 // ---------------------------------------------------------------- one conversation
@@ -284,10 +383,9 @@ function transcript(conv, result, isReplay) {
     return `<div class="turn agent${worst ? ' flag-' + worst : ''}"><div class="who">Agent</div>${bubble}${calls}${lat}${notes}</div>`;
   }).join('');
 }
-function findingList(result, label) {
-  const fs = (result.findings || []).filter(f => f.turn == null);
-  if (!fs.length) return '';
-  return fs.map(f => `<div class="finding ${f.severity}"><span class="sev sev-${f.severity}">${f.severity}</span> ${esc(f.message)}<span class="where">${label} · ${esc(f.code)}</span></div>`).join('');
+function findingList(result, label, gone) {
+  const fs = [...(result.findings || [])].sort((a, b) => sevOrder.indexOf(a.severity) - sevOrder.indexOf(b.severity));
+  return fs.map(f => `<div class="finding ${gone ? 'gone' : f.severity}"><span class="sev sev-${gone ? 'gone' : f.severity}">${gone ? 'gone' : f.severity}</span> ${esc(f.message)}<span class="where">${label} · ${esc(f.code)}</span></div>`).join('');
 }
 function show(i) {
   if (i < 0 || i >= visible.length) return;
@@ -297,11 +395,14 @@ function show(i) {
   $('#dhead').innerHTML = `<h3>${esc(it.id)}</h3>${pill(ref.status)}${REPLAY && it.change !== 'unscorable' ? `<span class="arrow">→</span>${pill(rep.status)} <span class="change ch-${it.change}">${it.change}</span>` : ''}
     <span class="meta">${esc(ref.intent || 'no intent')}${ref.intent_source ? ' · by ' + esc(ref.intent_source) : ''}</span>
     <span class="x-wrap" style="margin-left:auto;display:flex;gap:6px"><button class="dnav" onclick="show(${i - 1})" ${i ? '' : 'disabled'}>←</button><button class="dnav" onclick="show(${i + 1})" ${i < visible.length - 1 ? '' : 'disabled'}>→</button><button class="x" onclick="closeDrawer()" aria-label="Close">×</button></span>`;
-  const top = (findingList(ref, REPLAY ? 'recorded' : '') + (REPLAY && rep !== undefined && it.change !== 'unscorable' && rep.status !== 'error' ? findingList(rep, 'replayed') : '')) +
-    (rep && rep.status === 'error' ? `<div class="finding error"><span class="sev sev-error">error</span> The replay could not run: ${esc(rep.reason)}<span class="where">the run, not the agent</span></div>` : '') +
-    (ref.status === 'unscorable' ? `<div class="finding info"><span class="sev sev-info">unscorable</span> ${esc(ref.reason)}</div>` : '');
+  // what the checks found: in the replay; for a fix, also what was wrong in the recording and is gone now
+  const top = ref.status === 'unscorable' ? `<div class="finding info"><span class="sev sev-info">unscorable</span> ${esc(ref.reason)}<span class="where">nothing to judge, not replayed</span></div>` :
+    !REPLAY ? findingList(ref, 'recorded') :
+    rep.status === 'error' ? `<div class="finding error"><span class="sev sev-error">error</span> The replay could not run: ${esc(rep.reason)}<span class="where">the run, not the agent</span></div>` :
+    findingList(rep, 'replayed') + (['fixed', 'better'].includes(it.change) ? findingList(ref, 'in the recording', true) : '');
   const sources = Object.entries(it.mock_sources || {}).map(([k, v]) => `${v} ${k}`).join(' · ');
-  $('#dbody').innerHTML = (top ? `<div class="findings">${top}</div>` : '') + (REPLAY ?
+  const diff = it.change === 'unscorable' || (rep && rep.status === 'error') ? '' : toolDiff(it);
+  $('#dbody').innerHTML = (top ? `<div class="findings">${top}</div>` : '') + diff + (REPLAY ?
     `<div class="cols"><div class="col"><h4>Recorded ${pill(ref.status)}</h4>${transcript(it.reference_conversation, ref)}</div>
      <div class="col"><h4>Replayed ${rep ? pill(rep.status) : ''} ${sources ? `<span class="meta" style="text-transform:none;letter-spacing:0">tool results: ${esc(sources)}</span>` : ''}</h4>${
        it.change === 'unscorable' ? `<div class="reason">Not replayed: ${esc(ref.reason)}.</div>` : rep.status === 'error' ? `<div class="reason">${esc(rep.reason)}</div>` : transcript(it.replay_conversation, rep, true)}</div></div>` :

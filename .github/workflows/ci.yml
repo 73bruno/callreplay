@@ -14,10 +14,21 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: pytest -q
-      - name: The demo runs and gates on regressions
+      - name: The gate fails on regressions and passes without them
+        env:
+          CALLREPLAY_STEP_SUMMARY: "0"
         run: |
-          callreplay demo --no-open --out /tmp/demo
           if callreplay replay examples/dental --agent demo --quiet --fail-on regressions --out /tmp/gate; then
             echo 'expected the demo regressions to fail the gate'; exit 1
           fi
           callreplay replay examples/dental --agent demo:v1 --quiet --fail-on regressions --out /tmp/gate
+      - name: init drafts a contract from the calls alone
+        env:
+          CALLREPLAY_STEP_SUMMARY: "0"
+        run: |
+          mkdir -p /tmp/calls && cp examples/dental/conversations/*.json examples/dental/prompt.md /tmp/calls/
+          callreplay init /tmp/calls
+          callreplay eval /tmp/calls --quiet --out /tmp/eval
+      - name: The demo, whose summary shows on this run's page
+        if: matrix.python == '3.12'
+        run: callreplay demo --no-open --out /tmp/demo

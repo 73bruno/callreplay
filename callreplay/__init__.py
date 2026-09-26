@@ -6,6 +6,6 @@ from .formats import load as load_conversations
 from .model import Conversation, ToolCall, Turn
 from .replay import Replayed, replay_all, replay_one
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 __all__ = ['Contract', 'Conversation', 'Replayed', 'Result', 'ToolCall', 'Turn', 'evaluate', 'load_contract',
            'load_conversations', 'replay_all', 'replay_one', '__version__']

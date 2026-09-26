@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "callreplay"
-version = "0.1.0"
+version = "0.2.0"
 description = "Regression tests for voice and chat agents from recorded conversations: replay them against a new prompt or model, score every call against a contract, and see what broke."
 readme = "README.md"
 license = { text = "MIT" }

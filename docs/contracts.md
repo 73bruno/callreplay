@@ -4,6 +4,35 @@ A contract says what a correct conversation looks like. It is a TOML file, usual
 `contract.toml` next to the conversations. Without one, only the generic checks run (empty turns,
 repeated calls, the agent never answering).
 
+## Drafting one from your calls
+
+```bash
+callreplay init calls/
+```
+
+`init` reads what the agent did in the recorded calls and writes a `contract.toml` to start from:
+
+- one intent per kind of call, named after the tool the call was for (the last tool that changed
+  something, else a transfer, else the last tool used). Its `requires` are the tools at least 80%
+  of those calls used, `prefers` the ones half of them used, `order` the order they always came in,
+  and `keywords` a few words those callers said in their opening line and other callers hardly
+  ever did. Calls that used no tools share an intent, `no_tools`.
+- `required_args`: the arguments the agent passed every single time it called a tool.
+- `writes = true` for tools whose names say they change something (`create_`, `cancel_`,
+  `update_`, `book_`...).
+- `[end_call]`: a tool called `end_call`, `hang_up`, `end_conversation`... and, in `also_ends`,
+  the ones that transfer the call.
+- `[grounding]`: on, with `allow` listing the times and prices the agent said in three calls or
+  more without a tool returning them (usually opening hours or fixed prices from the prompt).
+- `[agent]`: `prompt.md` (or `prompt.txt`, `system_prompt.md`) if the folder has one, and
+  `tools.json`. When there is no `tools.json`, it writes one with the tools as the calls used them:
+  names, arguments and their types. Swap it for your real definitions when you have them.
+
+Then it checks the same calls against the draft and prints the result. The draft describes what
+the agent did, not what it should do: rename the intents, read the keywords, and loosen or tighten
+the rules. On the example's calls it flags the same four failures as the hand-written contract.
+`--out` writes it elsewhere, `--force` overwrites an existing one.
+
 The example in [`examples/dental/contract.toml`](../examples/dental/contract.toml) uses every
 section.
 

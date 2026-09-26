@@ -3,7 +3,8 @@
 `callreplay` reads a folder of `.json` / `.jsonl` files (or a `conversations/` folder inside it),
 a single `.json` with one conversation or a list, or a `.jsonl` with one per line. The format of
 each record is detected from its shape; force one with `--format`. To store them in the native
-format: `callreplay convert IN OUT`.
+format: `callreplay convert IN OUT`. A `tools.json` (the tool definitions) or a `results.json`
+(a report) in the same folder is not read as a conversation.
 
 ## Native
 

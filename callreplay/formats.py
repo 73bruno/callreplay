@@ -19,6 +19,7 @@ from typing import Any
 from .model import Conversation, ToolCall, Turn, _args
 
 FORMATS = ('native', 'openai', 'elevenlabs', 'livekit')
+NOT_CONVERSATIONS = {'tools.json', 'results.json'}      # tool definitions and reports that may sit next to the calls
 
 
 def load(path: str | Path, fmt: str = 'auto') -> list[Conversation]:
@@ -26,7 +27,8 @@ def load(path: str | Path, fmt: str = 'auto') -> list[Conversation]:
     if path.is_dir():
         sub = path / 'conversations'
         folder = sub if sub.is_dir() else path
-        files = sorted(p for p in folder.iterdir() if p.suffix in ('.json', '.jsonl'))
+        files = sorted(p for p in folder.iterdir() if p.suffix in ('.json', '.jsonl') and p.name not in NOT_CONVERSATIONS
+                       and not p.name.startswith('.'))
     else:
         files = [path]
     out: list[Conversation] = []

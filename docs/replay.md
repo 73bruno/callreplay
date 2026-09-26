@@ -97,11 +97,13 @@ callreplay replay calls/ --agent python:my_agent:reply
 - run: callreplay replay calls/ --agent openai:gpt-4.1-mini --fail-on regressions
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-- run: cat callreplay-report/summary.md >> "$GITHUB_STEP_SUMMARY"
-  if: always()
 - uses: actions/upload-artifact@v4
   if: always()
   with: { name: callreplay-report, path: callreplay-report }
 ```
 
-`summary.md` lists the regressions with their first finding, ready for a pull-request comment.
+In GitHub Actions the summary goes to the run's page by itself: what regressed, grouped by cause,
+with one call of each shown as the caller's words and the tools recorded against the tools
+replayed. `CALLREPLAY_STEP_SUMMARY=0` turns that off. The same text is in
+`callreplay-report/summary.md`, ready for a pull-request comment; the HTML report is in the
+uploaded artifact.
